@@ -20,7 +20,7 @@ win:
       filter:
         - sing-box.exe
         - wintun.dll
-        - config.json
+        - server.json
 
 nsis:
   oneClick: false
@@ -47,7 +47,7 @@ mac:
       to: core
       filter:
         - sing-box-darwin-*
-        - config.json
+        - server.json
 
 dmg:
   title: ایران پرو
