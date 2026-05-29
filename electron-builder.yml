@@ -27,7 +27,4 @@ nsis:
   createDesktopShortcut: true
   createStartMenuShortcut: true
   shortcutName: ایران پرو
-  installerLanguages:
-    - fa_IR
-    - en_US
   artifactName: IranPro-Setup-${version}.${ext}
