@@ -11,3 +11,5 @@ core/*.zip
 core/config.json
 core/server.json
 src/renderer/vendor/three.module.js
+
+core/_*.json

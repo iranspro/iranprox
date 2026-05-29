@@ -1,6 +1,0 @@
-{ "log":{"level":"info"},
-  "inbounds":[{"type":"socks","tag":"s","listen":"127.0.0.1","listen_port":10810}],
-  "outbounds":[{"type":"hysteria2","tag":"hy2","server":"91.107.170.103","server_port":443,
-    "password":"45cbfdd093bb2afda25e3a69cf39ec48",
-    "tls":{"enabled":true,"server_name":"www.apple.com","insecure":true,"alpn":["h3"]}}],
-  "route":{"final":"hy2"} }
