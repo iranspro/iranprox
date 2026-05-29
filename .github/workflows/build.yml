@@ -6,6 +6,9 @@ on:
     tags:
       - "v*"
 
+permissions:
+  contents: write
+
 jobs:
   mac:
     runs-on: macos-latest
@@ -22,7 +25,9 @@ jobs:
       - run: node scripts/fetch-core-mac.js
       - run: node scripts/fetch-vendor.js
       - run: node scripts/make-client-config.js core/server.json
-      - run: npx electron-builder --mac --publish never
+      - run: npx electron-builder --mac --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/upload-artifact@v4
         with:
           name: iranpro-mac-dmg
