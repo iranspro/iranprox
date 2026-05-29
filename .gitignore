@@ -13,3 +13,5 @@ core/server.json
 src/renderer/vendor/three.module.js
 
 core/_*.json
+
+dist-mac/

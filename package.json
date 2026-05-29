@@ -1,7 +1,7 @@
 {
   "name": "iran-pro",
   "productName": "ایران پرو",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Iran Pro — one-click secure internet",
   "main": "src/main/main.js",
   "author": "Iran Pro",

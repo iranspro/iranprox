@@ -19,6 +19,7 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
+[hidden] { display: none !important; }  /* class display rules must not override the hidden attribute */
 html, body { height: 100%; }
 body {
   font-family: "Vazirmatn", Tahoma, system-ui, sans-serif;
