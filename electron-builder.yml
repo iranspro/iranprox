@@ -8,6 +8,7 @@ publish:
   provider: github
   owner: iranspro
   repo: iranprox
+  releaseType: release
 files:
   - src/**/*
   - "!**/*.map"
