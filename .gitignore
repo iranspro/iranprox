@@ -2,6 +2,8 @@ node_modules/
 dist/
 # bundled binaries / secrets — never commit
 core/sing-box.exe
+core/sing-box-darwin-*
+core/sing-box
 core/wintun.dll
 core/wintun/
 core/sing-box-*/

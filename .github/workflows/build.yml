@@ -1,0 +1,51 @@
+name: build installers
+
+on:
+  workflow_dispatch:        # run manually from the Actions tab
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm install --include=dev --no-audit --no-fund
+      - name: Write server params
+        env:
+          SERVER_JSON: ${{ secrets.IRANPRO_SERVER_JSON }}
+        run: printf '%s' "$SERVER_JSON" > core/server.json
+      - run: node scripts/fetch-core-mac.js
+      - run: node scripts/fetch-vendor.js
+      - run: node scripts/make-client-config.js core/server.json
+      - run: npx electron-builder --mac --publish never
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iranpro-mac-dmg
+          path: dist/*.dmg
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm install --include=dev --no-audit --no-fund
+      - name: Write server params
+        shell: bash
+        env:
+          SERVER_JSON: ${{ secrets.IRANPRO_SERVER_JSON }}
+        run: printf '%s' "$SERVER_JSON" > core/server.json
+      - run: node scripts/fetch-core.js
+      - run: node scripts/fetch-vendor.js
+      - run: node scripts/make-client-config.js core/server.json
+      - run: npx electron-builder --win --x64 --publish never
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iranpro-windows-exe
+          path: dist/*.exe

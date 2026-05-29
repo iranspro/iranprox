@@ -57,6 +57,30 @@ sudo bash install.sh
 }
 ```
 
+## macOS build (via GitHub Actions — no Mac needed)
+A real `.dmg` can only be produced on macOS. Use the free macOS runner:
+
+1. Push this repo to GitHub.
+2. Repo → **Settings → Secrets and variables → Actions → New repository secret**
+   - Name: `IRANPRO_SERVER_JSON`
+   - Value: the full contents of `core/server.json`
+3. Repo → **Actions → "build installers" → Run workflow** (or push a `v*` tag).
+4. Download artifacts: `iranpro-mac-dmg` (arm64 + x64 `.dmg`) and `iranpro-windows-exe`.
+
+macOS runtime: TUN needs root, so the app runs the core via
+`osascript ... with administrator privileges` — one password prompt on connect,
+one on disconnect. Unsigned `.dmg` → Gatekeeper: right-click → Open the first time
+(or `xattr -cr "/Applications/ایران پرو.app"`). A signed build needs an Apple
+Developer cert ($99/yr) added to the workflow.
+
+### Local mac build (if you have a Mac)
+```bash
+npm install --include=dev
+node scripts/fetch-core-mac.js && node scripts/fetch-vendor.js
+node scripts/make-client-config.js core/server.json
+npx electron-builder --mac
+```
+
 ## Notes
 - Installer requests Administrator (TUN driver requirement).
 - The app tears down the tunnel on quit so the user is never left with broken routing.

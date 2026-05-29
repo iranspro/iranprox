@@ -7,19 +7,21 @@ directories:
 files:
   - src/**/*
   - "!**/*.map"
-extraResources:
-  # sing-box.exe + wintun.dll + the generated client config get bundled here
-  # and are reachable at process.resourcesPath/core at runtime
-  - from: core
-    to: core
-    filter:
-      - "**/*"
+
 win:
   target:
     - target: nsis
       arch:
         - x64
   requestedExecutionLevel: requireAdministrator   # needed for TUN / wintun driver
+  extraResources:
+    - from: core
+      to: core
+      filter:
+        - sing-box.exe
+        - wintun.dll
+        - config.json
+
 nsis:
   oneClick: false
   perMachine: true
@@ -28,3 +30,25 @@ nsis:
   createStartMenuShortcut: true
   shortcutName: ایران پرو
   artifactName: IranPro-Setup-${version}.${ext}
+
+mac:
+  target:
+    - target: dmg
+      arch:
+        - arm64
+        - x64
+  category: public.app-category.utilities
+  hardenedRuntime: false
+  gatekeeperAssess: false
+  identity: null                 # unsigned (no Apple Developer cert)
+  artifactName: IranPro-${version}-${arch}.${ext}
+  extraResources:
+    - from: core
+      to: core
+      filter:
+        - sing-box-darwin-*
+        - config.json
+
+dmg:
+  title: ایران پرو
+  artifactName: IranPro-${version}-${arch}.${ext}
