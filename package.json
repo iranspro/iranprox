@@ -1,0 +1,23 @@
+{
+  "name": "iran-pro",
+  "productName": "ایران پرو",
+  "version": "1.0.0",
+  "description": "Iran Pro — one-click secure internet",
+  "main": "src/main/main.js",
+  "author": "Iran Pro",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "setup": "node scripts/fetch-core.js && node scripts/fetch-vendor.js",
+    "config": "node scripts/make-client-config.js",
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "dist": "electron-builder --win --x64",
+    "pack": "electron-builder --dir"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "dependencies": {}
+}

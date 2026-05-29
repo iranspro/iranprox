@@ -1,0 +1,69 @@
+{
+  "log": { "level": "warn", "timestamp": true },
+  "dns": {
+    "servers": [
+      { "tag": "remote", "address": "https://1.1.1.1/dns-query", "detour": "proxy" },
+      { "tag": "local", "address": "local", "detour": "direct" }
+    ],
+    "rules": [
+      { "outbound": "any", "server": "local" }
+    ],
+    "strategy": "prefer_ipv4"
+  },
+  "inbounds": [
+    {
+      "type": "tun",
+      "tag": "tun-in",
+      "interface_name": "iranpro",
+      "inet4_address": "172.19.0.1/30",
+      "auto_route": true,
+      "strict_route": true,
+      "stack": "system",
+      "sniff": true,
+      "sniff_override_destination": false
+    }
+  ],
+  "outbounds": [
+    { "type": "selector", "tag": "proxy", "outbounds": ["auto", "vless", "hy2"], "default": "auto" },
+    {
+      "type": "urltest",
+      "tag": "auto",
+      "outbounds": ["vless", "hy2"],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "3m",
+      "tolerance": 80
+    },
+    {
+      "type": "vless",
+      "tag": "vless",
+      "server": "__SERVER_IP__",
+      "server_port": __REALITY_PORT__,
+      "uuid": "__UUID__",
+      "flow": "xtls-rprx-vision",
+      "tls": {
+        "enabled": true,
+        "server_name": "__SNI__",
+        "utls": { "enabled": true, "fingerprint": "chrome" },
+        "reality": { "enabled": true, "public_key": "__PUBLIC_KEY__", "short_id": "__SHORT_ID__" }
+      }
+    },
+    {
+      "type": "hysteria2",
+      "tag": "hy2",
+      "server": "__SERVER_IP__",
+      "server_port": __HY2_PORT__,
+      "password": "__HY2_PASSWORD__",
+      "tls": { "enabled": true, "server_name": "__SNI__", "insecure": true, "alpn": ["h3"] }
+    },
+    { "type": "direct", "tag": "direct" },
+    { "type": "dns", "tag": "dns-out" }
+  ],
+  "route": {
+    "rules": [
+      { "protocol": "dns", "outbound": "dns-out" },
+      { "ip_is_private": true, "outbound": "direct" }
+    ],
+    "auto_detect_interface": true,
+    "final": "proxy"
+  }
+}

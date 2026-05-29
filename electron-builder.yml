@@ -1,0 +1,33 @@
+appId: pro.iran.client
+productName: ایران پرو
+copyright: Copyright © 2026 Iran Pro
+directories:
+  output: dist
+  buildResources: build
+files:
+  - src/**/*
+  - "!**/*.map"
+extraResources:
+  # sing-box.exe + wintun.dll + the generated client config get bundled here
+  # and are reachable at process.resourcesPath/core at runtime
+  - from: core
+    to: core
+    filter:
+      - "**/*"
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  requestedExecutionLevel: requireAdministrator   # needed for TUN / wintun driver
+nsis:
+  oneClick: false
+  perMachine: true
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: ایران پرو
+  installerLanguages:
+    - fa_IR
+    - en_US
+  artifactName: IranPro-Setup-${version}.${ext}

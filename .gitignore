@@ -1,0 +1,11 @@
+node_modules/
+dist/
+# bundled binaries / secrets — never commit
+core/sing-box.exe
+core/wintun.dll
+core/wintun/
+core/sing-box-*/
+core/*.zip
+core/config.json
+core/server.json
+src/renderer/vendor/three.module.js

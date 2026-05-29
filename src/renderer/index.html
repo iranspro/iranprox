@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'" />
+  <title>ایران پرو</title>
+  <link rel="stylesheet" href="style.css" />
+  <script type="importmap">
+    { "imports": { "three": "./vendor/three.module.js" } }
+  </script>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar" data-drag>
+      <div class="brand">
+        <span class="brand-mark">پ</span>
+        <div class="brand-text">
+          <strong>ایران پرو</strong>
+          <small id="tagline">اتصال امن به اینترنت آزاد</small>
+        </div>
+      </div>
+      <button id="btn-quit" class="icon-btn" title="خروج" data-no-drag>✕</button>
+    </header>
+
+    <main class="stage">
+      <canvas id="globe"></canvas>
+
+      <div class="connect-wrap">
+        <button id="power" class="power" data-state="disconnected" aria-label="اتصال">
+          <span class="power-ring"></span>
+          <span class="power-glyph">⏻</span>
+        </button>
+      </div>
+
+      <div class="status">
+        <div id="status-text" class="status-text">آماده‌ی اتصال</div>
+        <div id="status-sub" class="status-sub">برای روشن‌کردن اینترنت آزاد، دکمه را لمس کنید</div>
+      </div>
+
+      <div class="meta">
+        <div class="meta-cell">
+          <span class="meta-k">سرور</span>
+          <span class="meta-v" id="m-server">ایران پرو</span>
+        </div>
+        <div class="meta-cell">
+          <span class="meta-k">پروتکل</span>
+          <span class="meta-v" id="m-proto">خودکار</span>
+        </div>
+        <div class="meta-cell">
+          <span class="meta-k">وضعیت</span>
+          <span class="meta-v" id="m-online">—</span>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <button id="btn-log" class="link-btn">گزارش فنی</button>
+      <span class="ver">نسخه ۱.۰.۰</span>
+    </footer>
+
+    <section id="logpanel" class="logpanel" hidden>
+      <pre id="logbox"></pre>
+    </section>
+  </div>
+
+  <script type="module" src="globe.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
