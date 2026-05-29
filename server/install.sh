@@ -150,7 +150,7 @@ sleep 1
 systemctl --no-pager --full status iranpro-singbox.service | head -n 6 || true
 
 # ---- print client params ----------------------------------------------------
-PUBIP="$(curl -fsSL https://api.ipify.org || echo '91.107.170.103')"
+PUBIP="$(curl -fsSL https://api.ipify.org || echo 'YOUR_SERVER_IP')"
 cat <<EOF
 
 ============================================================

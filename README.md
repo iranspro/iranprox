@@ -15,7 +15,7 @@ Iran Pro server → free, censorship-resistant internet.
 │   IPC │ (preload bridge)             ▼                     │
 │  Renderer (Three.js globe + power button)   all traffic ──┼──► server
 └──────────────────────────────────────────────────────────┘
-                                                   91.107.170.103
+                                                   YOUR_SERVER_IP
                                           VLESS+Reality :443 / Hysteria2 :8443
 ```
 
@@ -46,7 +46,7 @@ sudo bash install.sh
 ## core/server.json (gitignored — never commit)
 ```json
 {
-  "SERVER_IP": "91.107.170.103",
+  "SERVER_IP": "YOUR_SERVER_IP",
   "REALITY_PORT": 443,
   "UUID": "...",
   "PUBLIC_KEY": "...",

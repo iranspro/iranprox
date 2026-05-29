@@ -8,7 +8,7 @@
  *
  * core/server.json shape (produced from the server install.sh output):
  * {
- *   "SERVER_IP": "91.107.170.103",
+ *   "SERVER_IP": "YOUR_SERVER_IP",
  *   "REALITY_PORT": 443,
  *   "UUID": "....",
  *   "PUBLIC_KEY": "....",
