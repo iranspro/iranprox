@@ -171,6 +171,25 @@ body {
 /* ---- top actions ---- */
 .top-actions { display: flex; gap: 6px; }
 
+/* ---- live speed bar ---- */
+.speedbar {
+  z-index: 2; display: flex; align-items: center; gap: 14px; margin-top: 12px;
+  padding: 8px 14px; border: 1px solid var(--line); border-radius: 14px;
+  background: rgba(255,255,255,.035); backdrop-filter: blur(8px);
+}
+.live { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 800; color: var(--green); }
+.live-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--green);
+  box-shadow: 0 0 8px var(--green); animation: livepulse 1.6s ease-in-out infinite;
+}
+@keyframes livepulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .4; transform: scale(.7); } }
+.sp { display: flex; align-items: center; gap: 5px; }
+.sp-ic { font-size: 9px; }
+.sp-ic.down { color: var(--cyan-2); }
+.sp-ic.up { color: var(--gold); }
+.sp b { font-size: 13px; font-weight: 800; font-family: "JetBrains Mono", monospace; min-width: 64px; }
+.sp i { font-size: 10px; color: var(--muted); font-style: normal; }
+
 /* ---- quick segmented controls ---- */
 .quick { z-index: 2; width: 100%; max-width: 360px; margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
 .seg {

@@ -92,6 +92,7 @@ function buildConfig(settings) {
 
   return {
     log: { level: "info", timestamp: true },
+    experimental: { clash_api: { external_controller: "127.0.0.1:9090" } },
     dns: {
       servers: [
         { tag: "remote", address: "https://1.1.1.1/dns-query", detour: finalTag },

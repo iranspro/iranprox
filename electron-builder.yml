@@ -4,6 +4,10 @@ copyright: Copyright © 2026 Iran Pro
 directories:
   output: dist
   buildResources: build
+publish:
+  provider: github
+  owner: iranspro
+  repo: iranprox
 files:
   - src/**/*
   - "!**/*.map"

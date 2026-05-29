@@ -91,6 +91,37 @@
     showToast("تست انجام شد (در پنل لاگ)");
   });
 
+  // ---- live speed ----
+  const speedbar = $("speedbar");
+  function fmt(bps) {
+    if (bps < 1024) return bps.toFixed(0) + " B/s";
+    if (bps < 1048576) return (bps / 1024).toFixed(0) + " KB/s";
+    return (bps / 1048576).toFixed(1) + " MB/s";
+  }
+  window.iranpro.onSpeed((p) => {
+    if (!p) return;
+    const active = state === "connected" || state === "connecting";
+    speedbar.hidden = !active;
+    $("sp-down").textContent = fmt(p.down || 0);
+    $("sp-up").textContent = fmt(p.up || 0);
+  });
+
+  // ---- auto update ----
+  $("btn-update").addEventListener("click", async () => {
+    showToast("بررسی بروزرسانی…");
+    const r = await window.iranpro.checkUpdate();
+    if (r && r.state === "devmode") showToast("در حالت توسعه بروزرسانی نداریم");
+  });
+  window.iranpro.onUpdate((p) => {
+    if (!p) return;
+    if (p.state === "checking") showToast("در حال بررسی…");
+    else if (p.state === "latest") showToast("آخرین نسخه نصب است ✓");
+    else if (p.state === "available") showToast("نسخه‌ی جدید پیدا شد — دانلود…");
+    else if (p.state === "downloading") showToast(`دانلود بروزرسانی: ${p.percent}%`);
+    else if (p.state === "ready") showToast("نصب… برنامه ری‌استارت می‌شود");
+    else if (p.state === "error") showToast("خطای بروزرسانی");
+  });
+
   // ---- settings sheet ----
   $("btn-settings").addEventListener("click", () => (settings.hidden = false));
   $("btn-settings-close").addEventListener("click", () => (settings.hidden = true));

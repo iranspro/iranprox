@@ -3,12 +3,15 @@ const { app, BrowserWindow, ipcMain, Menu, shell, clipboard, net: enet } = requi
 const path = require("path");
 const fs = require("fs");
 const https = require("https");
+const http = require("http");
 const net = require("net");
 const { SingBox, exePath } = require("./singbox");
 const { buildConfig, defaults } = require("./configgen");
 const settingsStore = require("./settings");
 const sysproxy = require("./sysproxy");
 const { execFile } = require("child_process");
+let autoUpdater = null;
+try { autoUpdater = require("electron-updater").autoUpdater; } catch (_) {}
 
 let win = null;
 let sb = null;
@@ -73,6 +76,29 @@ function coreVersion() {
   });
 }
 
+// --- live speed via sing-box clash_api /connections ---------------------------
+let speedTimer = null, lastDown = 0, lastUp = 0, lastT = 0;
+function pollSpeed() {
+  const req = http.get("http://127.0.0.1:9090/connections", { timeout: 2500 }, (res) => {
+    let body = ""; res.on("data", (d) => (body += d));
+    res.on("end", () => {
+      try {
+        const j = JSON.parse(body);
+        const now = Date.now();
+        const dt = lastT ? (now - lastT) / 1000 : 1;
+        const down = Math.max(0, (j.downloadTotal - lastDown) / dt);
+        const up = Math.max(0, (j.uploadTotal - lastUp) / dt);
+        if (lastT) send("speed", { down, up, conns: (j.connections || []).length });
+        lastDown = j.downloadTotal; lastUp = j.uploadTotal; lastT = now;
+      } catch (_) {}
+    });
+  });
+  req.on("timeout", () => req.destroy());
+  req.on("error", () => {});
+}
+function startSpeed() { stopSpeed(); lastDown = lastUp = lastT = 0; speedTimer = setInterval(pollSpeed, 1000); }
+function stopSpeed() { if (speedTimer) clearInterval(speedTimer); speedTimer = null; send("speed", { down: 0, up: 0, conns: 0 }); }
+
 async function applyProxy(on, port) {
   try {
     if (on) { await sysproxy.enable(port); proxyOn = true; }
@@ -83,7 +109,7 @@ async function applyProxy(on, port) {
 app.whenReady().then(() => {
   sb = new SingBox(
     (line) => send("core-log", line),
-    (code) => { applyProxy(false); send("status", { state: "disconnected", code }); }
+    (code) => { stopSpeed(); applyProxy(false); send("status", { state: "disconnected", code }); }
   );
 
   ipcMain.handle("get-settings", () => getSettings());
@@ -98,6 +124,7 @@ app.whenReady().then(() => {
     const r = sb.start(activeConfigPath(), s.mode);
     if (!r.ok) { send("status", { state: "error", error: r.error }); return r; }
     send("status", { state: "connecting" });
+    startSpeed();
 
     if (s.mode === "proxy" && s.setSystemProxy) await applyProxy(true, s.proxyPort);
 
@@ -112,6 +139,7 @@ app.whenReady().then(() => {
   });
 
   ipcMain.handle("disconnect", async () => {
+    stopSpeed();
     await applyProxy(false);
     const r = sb.stop();
     send("status", { state: "disconnected" });
@@ -142,7 +170,24 @@ app.whenReady().then(() => {
     return { ok: true };
   });
 
-  ipcMain.handle("status", async () => ({ running: sb.running }));
+  // --- auto-update ---
+  if (autoUpdater) {
+    autoUpdater.autoDownload = true;
+    autoUpdater.on("checking-for-update", () => send("update", { state: "checking" }));
+    autoUpdater.on("update-available", (i) => send("update", { state: "available", version: i && i.version }));
+    autoUpdater.on("update-not-available", () => send("update", { state: "latest" }));
+    autoUpdater.on("download-progress", (p) => send("update", { state: "downloading", percent: Math.round(p.percent) }));
+    autoUpdater.on("update-downloaded", () => { send("update", { state: "ready" }); setTimeout(() => { try { autoUpdater.quitAndInstall(); } catch (_) {} }, 1200); });
+    autoUpdater.on("error", (e) => send("update", { state: "error", error: String(e && e.message || e) }));
+  }
+  ipcMain.handle("check-update", async () => {
+    if (!app.isPackaged) return { ok: false, state: "devmode" };
+    if (!autoUpdater) return { ok: false, state: "unavailable" };
+    try { autoUpdater.checkForUpdates(); return { ok: true }; }
+    catch (e) { return { ok: false, error: String(e && e.message || e) }; }
+  });
+
+  ipcMain.handle("status", async () => ({ running: sb.running, version: app.getVersion() }));
   ipcMain.handle("quit", async () => { await applyProxy(false); if (sb) sb.stop(); app.quit(); });
 
   createWindow();
